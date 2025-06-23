@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float attackRadius;
     [SerializeField] private Transform attackPoint;
     [SerializeField] private LayerMask whatIsEnemy;
+    [SerializeField] private int attackDamage = 10;
 
     private bool facingRight = true;
     private bool canMove = true;
@@ -112,7 +113,7 @@ public class Player : MonoBehaviour
         Collider2D[] enemyColliders = Physics2D.OverlapCircleAll(attackPoint.position, attackRadius, whatIsEnemy);
         foreach (Collider2D enemy in enemyColliders)
         {
-            enemy.GetComponent<Enemy>().TakeDamage();
+            enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
         }
     }
 
