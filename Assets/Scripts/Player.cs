@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask whatIsGround;
 
     private bool facingRight = true;
+    private bool canMove = true;
+    private bool canJump = true;
 
     private void Awake()
     {
@@ -32,6 +34,12 @@ public class Player : MonoBehaviour
         HandleAnimations();
     }
 
+    public void EnableMovementAndJump(bool enable)
+    {
+        canMove = enable;
+        canJump = enable;
+    }
+
     private void HandleAnimations()
     {
         anim.SetBool("isGrounded", isGrounded);
@@ -42,25 +50,32 @@ public class Player : MonoBehaviour
     private void HandleInput()
     {
         xInput = Input.GetAxisRaw("Horizontal");
-        Debug.Log("xInput: " + xInput);
 
         if (Input.GetButtonDown("Jump"))
         {
             Jump();
         }
+
+        if (Input.GetButtonDown("Fire1"))
+        {
+            TryToAttack();
+        }
+    }
+
+    private void TryToAttack()
+    {
+        if (isGrounded)
+            anim.SetBool("attack", true);
     }
 
     private void HandleMovement()
     {
-        rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocityY);
+        if (canMove)
+            rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocityY);
+        else
+            rb.linearVelocity = new Vector2(0, rb.linearVelocityY);
     }
 
-    private void Jump()
-    {
-        if (isGrounded) {
-            rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
-        }
-    }
 
     private void HandleCollision()
     {
@@ -76,6 +91,14 @@ public class Player : MonoBehaviour
         else if (rb.linearVelocityX < 0 && facingRight == true)
         {
             Flip();
+        }
+    }
+
+    private void Jump()
+    {
+        if (isGrounded && canJump)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
         }
     }
 
