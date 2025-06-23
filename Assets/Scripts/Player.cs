@@ -34,21 +34,15 @@ public class Player : MonoBehaviour
 
     private void HandleAnimations()
     {
-        bool isMoving = rb.linearVelocityX != 0;
-
-        if (isMoving)
-        {
-            anim.SetBool("isMoving", true);
-        }
-        else
-        {
-            anim.SetBool("isMoving", false);
-        }
+        anim.SetBool("isGrounded", isGrounded);
+        anim.SetFloat("xVelocity", rb.linearVelocityX);
+        anim.SetFloat("yVelocity", rb.linearVelocityY);
     }
 
     private void HandleInput()
     {
         xInput = Input.GetAxisRaw("Horizontal");
+        Debug.Log("xInput: " + xInput);
 
         if (Input.GetButtonDown("Jump"))
         {
