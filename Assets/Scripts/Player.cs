@@ -15,6 +15,11 @@ public class Player : MonoBehaviour
     [SerializeField] private bool isGrounded;
     [SerializeField] private LayerMask whatIsGround;
 
+    [Header("Attack Details")]
+    [SerializeField] private float attackRadius;
+    [SerializeField] private Transform attackPoint;
+    [SerializeField] private LayerMask whatIsEnemy;
+
     private bool facingRight = true;
     private bool canMove = true;
     private bool canJump = true;
@@ -102,6 +107,15 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void DamageEnemies()
+    {
+        Collider2D[] enemyColliders = Physics2D.OverlapCircleAll(attackPoint.position, attackRadius, whatIsEnemy);
+        foreach (Collider2D enemy in enemyColliders)
+        {
+            enemy.GetComponent<Enemy>().TakeDamage();
+        }
+    }
+
     private void Flip()
     {
         transform.Rotate(0, 180, 0);
@@ -111,6 +125,7 @@ public class Player : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, -groundCheckDistance));
+        Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
     }
 
 }
