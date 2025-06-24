@@ -3,20 +3,26 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // Animation
+    public Animator anim { get; private set; }
+
+    // Input
+    private PlayerInputActions input;
+    public Vector2 moveInput { get; private set; }
+
+    // State machine and states
     private StateMachine stateMachine;
     public PlayerIdleState idleState { get; private set; }
     public PlayerMoveState moveState { get; private set; }
 
-    private PlayerInputActions input;
-
-    public Vector2 moveInput { get; private set; }
-
     private void Awake()
     {
+        anim = GetComponentInChildren<Animator>();
         input = new PlayerInputActions();
+
         stateMachine = new StateMachine();
-        idleState = new PlayerIdleState(this, stateMachine, "Idle");
-        moveState = new PlayerMoveState(this, stateMachine, "Move");
+        idleState = new PlayerIdleState(this, stateMachine, "idle");
+        moveState = new PlayerMoveState(this, stateMachine, "move");
     }
 
     private void OnEnable()
