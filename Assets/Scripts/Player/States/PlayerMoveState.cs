@@ -1,9 +1,8 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMoveState : EntityState
 {
-    private bool isFacingRight = true;
-
     public PlayerMoveState(Player player, StateMachine stateMachine, string stateName = "") : base(player, stateMachine, stateName)
     {
     }
@@ -11,11 +10,12 @@ public class PlayerMoveState : EntityState
     public override void Update()
     {
         base.Update();
-        FlipSprite();
         if (player.moveInput.x == 0)
         {
             stateMachine.ChangeState(player.idleState);
         }
+
+        player.SetVelocity(player.moveInput.x * player.moveSpeed, rb.linearVelocityY);
     }
 
     public override void Exit()
@@ -24,17 +24,5 @@ public class PlayerMoveState : EntityState
         Debug.Log("Time for a break!");
     }
 
-    private void FlipSprite()
-    {
-        if (player.moveInput.x > 0 && !isFacingRight)
-        {
-            isFacingRight = !isFacingRight;
-            player.transform.Rotate(new Vector3(0, 180, 0));
-        }
-        else if (player.moveInput.x < 0 && isFacingRight)
-        {
-            isFacingRight = !isFacingRight;
-            player.transform.Rotate(new Vector3(0, 180, 0));
-        }
-    }
+    
 }
