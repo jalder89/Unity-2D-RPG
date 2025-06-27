@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     [Header("Movement Details")]
     public float moveSpeed = 5f;
     public float jumpForce = 5f;
-    public float inAirMoveMultiplier = 2.5f;
+    [Range(0, 1)] public float inAirMoveMultiplier = 0.75f;
     private bool isFacingRight = true;
 
     [Header("Collision Detection")]

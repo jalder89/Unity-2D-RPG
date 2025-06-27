@@ -617,11 +617,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 8
   jumpForce: 12
+  inAirMoveMultiplier: 0.8
   groundCheckDistance: 1.5
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  groundDetected: 0
 --- !u!4 &1829378456
 Transform:
   m_ObjectHideFlags: 0

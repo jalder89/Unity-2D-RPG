@@ -10,12 +10,16 @@ public class PlayerGroundedState : EntityState
     {
         base.Update();
 
+        if (rb.linearVelocityY < 0)
+        {
+            stateMachine.ChangeState(player.fallState);
+        }
+
         if (input.Player.Jump.WasPerformedThisFrame())
         {
-            Debug.Log("Jumping from Grounded State!");
             stateMachine.ChangeState(player.jumpState);
         }
     }
 
-    
+
 }
