@@ -1,12 +1,16 @@
 using UnityEngine;
 
-public class PlayerIdleState : EntityState
+public class PlayerIdleState : PlayerGroundedState
 {
-    private float xInput;
-    private float yInput;
 
     public PlayerIdleState(Player player, StateMachine stateMachine, string stateName = "") : base(player, stateMachine, stateName)
     {
+    }
+    
+    public override void Enter()
+    {
+        base.Enter();
+        player.SetVelocity(0, player.rb.linearVelocityY);
     }
 
     public override void Update()
@@ -16,6 +20,11 @@ public class PlayerIdleState : EntityState
         if (player.moveInput.x != 0)
         {
             stateMachine.ChangeState(player.moveState);
+        }
+
+        if (player.input.Player.Jump.WasPressedThisFrame())
+        {
+            Debug.Log("Jumping!");
         }
     }
 }
