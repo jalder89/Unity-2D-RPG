@@ -10,6 +10,7 @@ public abstract class EntityState
     protected PlayerInputActions input;
 
     protected float stateTimer;
+    protected bool triggerCalled;
 
     public EntityState(Player player, StateMachine stateMachine, string animBoolName = "")
     {
@@ -26,6 +27,7 @@ public abstract class EntityState
         // Code to execute when entering the state
         Debug.Log($"Entering state: {animBoolName}");
         anim.SetBool(animBoolName, true);
+        triggerCalled = false;
     }
 
     public virtual void Update()
@@ -39,6 +41,11 @@ public abstract class EntityState
         }
 
         stateTimer -= Time.deltaTime;
+    }
+
+    public void CallAnimationTrigger()
+    {
+        triggerCalled = true;
     }
 
     private bool CanDash()
