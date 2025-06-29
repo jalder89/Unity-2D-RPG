@@ -9,6 +9,8 @@ public abstract class EntityState
     protected Rigidbody2D rb;
     protected PlayerInputActions input;
 
+    protected float stateTimer;
+
     public EntityState(Player player, StateMachine stateMachine, string animBoolName = "")
     {
         this.player = player;
@@ -30,6 +32,19 @@ public abstract class EntityState
     {
         // Code to execute during the state update
         anim.SetFloat("yVelocity", rb.linearVelocityY);
+
+        if (input.Player.Dash.WasPressedThisFrame() && CanDash())
+        {
+            stateMachine.ChangeState(player.dashState);
+        }
+
+        stateTimer -= Time.deltaTime;
+    }
+
+    private bool CanDash()
+    {
+        // Check if the player can dash based on conditions like cooldown, input, etc.
+        return !player.wallDetected && stateMachine.currentState != player.dashState;
     }
 
     public virtual void Exit()
