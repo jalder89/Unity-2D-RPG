@@ -15,7 +15,7 @@ public class PlayerDashState : EntityState
 
         dashDirection = player.moveInput.x != 0 ? (int)player.moveInput.x : player.facingDirection;
         stateTimer = player.dashDuration;
-        
+
         originalGravityScale = player.rb.gravityScale;
         player.rb.gravityScale = 0f; // Disable gravity during dash
     }
@@ -25,7 +25,7 @@ public class PlayerDashState : EntityState
         base.Update();
 
         CancelDashIfNeeded();
-        player.rb.linearVelocity = new Vector2(player.dashSpeed * dashDirection, 0);
+        player.SetVelocity(player.dashSpeed * dashDirection, 0);
 
         if (stateTimer <= 0f)
         {
