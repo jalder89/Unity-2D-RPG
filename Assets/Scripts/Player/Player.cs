@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -25,7 +26,8 @@ public class Player : MonoBehaviour
     [Header("Attack Details")]
     public Vector2[] attackVelocity;
     public float attackVelocityDuration = 0.1f;
-    public float comboResetTime = 0.75f;
+    public float comboResetTime = 1f;
+    private Coroutine attackQueueCoroutine;
 
     // Player state
     [Header("Movement Details")]
@@ -87,6 +89,21 @@ public class Player : MonoBehaviour
         input.Disable();
     }
 
+    public void EnterAttackStateWithDelay()
+    {
+        if (attackQueueCoroutine != null)
+        {
+            StopCoroutine(attackQueueCoroutine);
+        }
+        attackQueueCoroutine = StartCoroutine(EnterAttackStateWithDelayCorouting());
+    }
+
+    private IEnumerator EnterAttackStateWithDelayCorouting()
+    {
+        yield return new WaitForEndOfFrame();
+        stateMachine.ChangeState(basicAttackState);
+    }
+
     public void CallAnimationTrigger()
     {
         stateMachine.currentState.CallAnimationTrigger();
@@ -100,7 +117,11 @@ public class Player : MonoBehaviour
 
     private void HandleFlip(float xVelocity)
     {
-        if (xVelocity > 0 && !isFacingRight || xVelocity < 0 && isFacingRight)
+        if (xVelocity > 0 && isFacingRight == false)
+        {
+            FlipSprite();
+        }
+        else if (xVelocity < 0 && isFacingRight)
         {
             FlipSprite();
         }

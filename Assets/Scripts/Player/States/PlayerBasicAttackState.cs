@@ -3,11 +3,14 @@ using UnityEngine;
 public class PlayerBasicAttackState : EntityState
 {
     private float attackVelocityTimer;
-    private const int FirstComboIndex = 1; // The first attack in the combo sequence, used in animator
+    private float lastTimeAttacked;
+
+    private bool comboAttackQueued;
+    private int attackDirection;
     private int comboIndex = 1;
     private int comboLimit = 3;
+    private const int FirstComboIndex = 1; // The first attack in the combo sequence, used in animator
 
-    private float lastTimeAttacked;
 
     public PlayerBasicAttackState(Player player, StateMachine stateMachine, string animBoolName = "") : base(player, stateMachine, animBoolName)
     {
@@ -22,7 +25,12 @@ public class PlayerBasicAttackState : EntityState
     {
         base.Enter();
 
+        comboAttackQueued = false;
         ResetComboIndexIfNeeded();
+        
+        // Define the attack direction based on player input
+        attackDirection = player.moveInput.x != 0 ? (int)player.moveInput.x : player.facingDirection;
+
         anim.SetInteger("basicAttackIndex", comboIndex);
         ApplyAttackVelocity();
     }
@@ -40,12 +48,13 @@ public class PlayerBasicAttackState : EntityState
         base.Update();
 
         HandleAttackVelocity();
-
-        // Todo: Add attack logic here (e.g., hit detection, damage application)
-
+        if (input.Player.Attack.WasPressedThisFrame())
+        {
+            QueueNextComboAttack();
+        }
         if (triggerCalled)
         {
-            stateMachine.ChangeState(player.idleState);
+            HandleStateExit();
         }
     }
 
@@ -55,6 +64,19 @@ public class PlayerBasicAttackState : EntityState
 
         comboIndex++;
         lastTimeAttacked = Time.time;
+    }
+
+    private void HandleStateExit()
+    {
+         if (comboAttackQueued)
+        {
+            anim.SetBool(animBoolName, false);
+            player.EnterAttackStateWithDelay();
+        }
+        else
+        {
+            stateMachine.ChangeState(player.idleState);
+        }
     }
 
     private void HandleAttackVelocity()
@@ -67,9 +89,17 @@ public class PlayerBasicAttackState : EntityState
         }
     }
 
+    private void QueueNextComboAttack()
+    {
+        if (comboIndex < comboLimit)
+        {
+            comboAttackQueued = true;
+        }
+    }
+
     private void ApplyAttackVelocity()
     {
         attackVelocityTimer = player.attackVelocityDuration;
-        player.SetVelocity(player.attackVelocity[comboIndex - 1].x * player.facingDirection, player.attackVelocity[comboIndex - 1].y);
+        player.SetVelocity(player.attackVelocity[comboIndex - 1].x * attackDirection, player.attackVelocity[comboIndex - 1].y);
     }
 }
