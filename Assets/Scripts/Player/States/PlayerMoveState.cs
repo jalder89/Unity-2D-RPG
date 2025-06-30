@@ -10,7 +10,9 @@ public class PlayerMoveState : PlayerGroundedState
     public override void Update()
     {
         base.Update();
-        if (player.moveInput.x == 0)
+        
+        // If player stops or is against a wall, change to idle state
+        if (player.moveInput.x == 0 || player.wallDetected)
         {
             stateMachine.ChangeState(player.idleState);
         }

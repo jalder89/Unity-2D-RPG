@@ -17,14 +17,15 @@ public class PlayerIdleState : PlayerGroundedState
     {
         base.Update();
 
+        // If the player attempts moving into the wall, do nothing
+        if (player.moveInput.x == player.facingDirection && player.wallDetected)
+        {
+            return;
+        }
+
         if (player.moveInput.x != 0)
         {
             stateMachine.ChangeState(player.moveState);
-        }
-
-        if (player.input.Player.Jump.WasPressedThisFrame())
-        {
-            Debug.Log("Jumping!");
         }
     }
 }
